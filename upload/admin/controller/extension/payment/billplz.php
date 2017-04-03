@@ -207,6 +207,10 @@ class ControllerExtensionPaymentBillplz extends Controller {
         if (!$this->request->post['billplz_vkey']) {
             $this->error['vkey'] = $this->language->get('error_vkey');
         }
+        
+        if (!$this->request->post['billplz_xsign']) {
+			$this->error['xsign'] = $this->language->get('error_xsign');
+		}
 
         return !$this->error;
     }
