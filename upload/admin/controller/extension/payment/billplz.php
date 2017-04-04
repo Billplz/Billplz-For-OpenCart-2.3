@@ -39,10 +39,10 @@ class ControllerExtensionPaymentBillplz extends Controller {
         $data['entry_mid'] = $this->language->get('entry_mid');
         $data['entry_vkey'] = $this->language->get('entry_vkey');
         $data['entry_xsign'] = $this->language->get('entry_xsign');
-        $data['entry_host'] = 'Production/Sandbox Mode';
-        $data['entry_minlimit'] = 'Minimum Limit';
-        $data['entry_delivery'] = 'Notification';
-        $data['entry_order_status'] = $this->language->get('entry_order_status');
+        $data['entry_host'] = $this->language->get('entry_host');
+		$data['entry_minlimit'] = $this->language->get('entry_minlimit');
+		$data['entry_delivery'] = $this->language->get('entry_delivery');
+		$data['entry_order_status'] = $this->language->get('entry_order_status');
         $data['entry_completed_status'] = $this->language->get('entry_completed_status');
         $data['entry_pending_status'] = $this->language->get('entry_pending_status');
         $data['entry_failed_status'] = $this->language->get('entry_failed_status');
@@ -52,8 +52,8 @@ class ControllerExtensionPaymentBillplz extends Controller {
 
         $data['help_vkey'] = $this->language->get('help_vkey');
         $data['help_xsign'] = $this->language->get('help_xsign');
-        $data['help_minlimit'] = 'Set total minimum limit to enable Billplz';
-
+        $data['help_minlimit'] = $this->language->get('help_minlimit');
+		
         $data['button_save'] = $this->language->get('button_save');
         $data['button_cancel'] = $this->language->get('button_cancel');
 
@@ -207,8 +207,8 @@ class ControllerExtensionPaymentBillplz extends Controller {
         if (!$this->request->post['billplz_vkey']) {
             $this->error['vkey'] = $this->language->get('error_vkey');
         }
-        
-        if (!$this->request->post['billplz_xsign']) {
+		
+		if (!$this->request->post['billplz_xsign']) {
 			$this->error['xsign'] = $this->language->get('error_xsign');
 		}
 

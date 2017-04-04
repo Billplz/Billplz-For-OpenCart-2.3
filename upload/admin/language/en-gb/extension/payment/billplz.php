@@ -24,6 +24,9 @@ $_['text_billplz'] = '<a onclick="window.open(\'http://www.billplz.com/\');" sty
 $_['entry_mid'] = 'Billplz API Key';
 $_['entry_vkey'] = 'Billplz Collection ID';
 $_['entry_xsign'] = 'Billplz X Signature Key';
+$_['entry_host'] = 'Production/Sandbox Mode';
+$_['entry_minlimit'] = 'Minimum Limit';
+$_['entry_delivery'] = 'Notification';
 $_['entry_order_status'] = 'Order Status';
 $_['entry_completed_status'] = 'Completed Status';
 $_['entry_pending_status'] = 'Pending Status';
@@ -35,11 +38,12 @@ $_['entry_sort_order'] = 'Sort Order';
 // Help
 $_['help_vkey'] = 'Please refer to your Billplz.com for this key.';
 $_['help_xsign'] = 'Please refer to your Billplz.com for this key. Make sure you enable the X Signature';
+$_['help_minlimit'] = 'Set total minimum limit to enable Billplz';
 
 // Error
 $_['error_permission'] = 'Warning: You do not have permission to modify Billplz Malaysia Online Payment Gateway!';
 $_['error_mid'] = '<b>Billplz API Key</b> Required!';
 $_['error_vkey'] = '<b>Billplz Collection ID</b> Required!';
 $_['error_xsign'] = '<b>Billplz X Signature Key</b> Required!';
-$_['error_settings'] = 'Billplz API Key and Collection ID mismatch, contact sales@wanzul-hosting.com to assist.';
+$_['error_settings'] = 'Billplz API Key and Collection ID mismatch, contact wan@wanzul-hosting.com to assist.';
 $_['error_status'] = 'Unable to connect Billplz API.';
