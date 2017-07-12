@@ -7,13 +7,16 @@
  * @author Wanzul-Hosting.com <sales@wanzul-hosting.com>
  * @version 2.0
  */
-class ControllerExtensionPaymentBillplz extends Controller {
+class ControllerExtensionPaymentBillplz extends Controller
+{
 
-    private function get_domain_forwebmaster() {
+    private function get_domain_forwebmaster()
+    {
         return substr($_SERVER['HTTP_HOST'], 0, 3) == 'www' ? substr($_SERVER['HTTP_HOST'], 4) : $_SERVER['HTTP_HOST'];
     }
 
-    public function index() {
+    public function index()
+    {
         $this->load->language('extension/payment/billplz');
         $data['button_confirm'] = $this->language->get('button_confirm');
         $this->load->model('checkout/order');
@@ -29,64 +32,62 @@ class ControllerExtensionPaymentBillplz extends Controller {
 
 
         $amount = $this->currency->format($order_info['total'], $order_info['currency_code'], $order_info['currency_value'], false);
-        $data['name'] = $order_info['payment_firstname'] . ' ' . $order_info['payment_lastname'];
-        $data['email'] = empty($order_info['email']) ? '' : $order_info['email'];
-        $data['description'] = "Order " . $this->session->data['order_id'] . " - " . implode($data['prod_desc']);
-        $data['mobile'] = empty($order_info['telephone']) ? '' : $order_info['telephone'];
-        $data['reference_1_label'] = "ID";
+
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        $_SESSION['name'] = $order_info['payment_firstname'] . ' ' . $order_info['payment_lastname'];
+        $_SESSION['email'] = empty($order_info['email']) ? '' : $order_info['email'];
+        $_SESSION['description'] = "Order " . $this->session->data['order_id'] . " - " . implode($data['prod_desc']);
+        $_SESSION['mobile'] = empty($order_info['telephone']) ? '' : $order_info['telephone'];
+        $_SESSION['reference_1_label'] = "ID";
 
 
-        $data['reference_1'] = $this->session->data['order_id'];
-        $data['amount'] = $amount;
-        $data['redirect_url'] = $this->url->link('extension/payment/billplz/return_ipn', '', true);
-        $data['callback_url'] = $this->url->link('extension/payment/billplz/callback_ipn', '', true);
-        $data['delivery'] = $this->config->get('billplz_delivery'); //0-4
+        $_SESSION['reference_1'] = $this->session->data['order_id'];
+        $_SESSION['amount'] = $amount;
+        $_SESSION['redirect_url'] = $this->url->link('extension/payment/billplz/return_ipn', '', true);
+        $_SESSION['callback_url'] = $this->url->link('extension/payment/billplz/callback_ipn', '', true);
+        $_SESSION['delivery'] = $this->config->get('billplz_delivery'); //0-4
         $data['action'] = $this->url->link('extension/payment/billplz/proceed', '', true);
-
-        /*
-         *  Prepare Data for Validation SHA256
-         *  Data arranged: name + amount + email + delivery + callback url + redirect url + reference 1 + description
-         *  Rules: All Lower-Case
-         */
-
-        $preparedString = strtolower($data['name'] . $data['amount'] .
-                $data['email'] . $data['delivery'] . $data['callback_url'] . $data['redirect_url'] . $data['reference_1'] . $data['description']);
-        $data['sha256'] = hash_hmac('sha256', $preparedString, $this->config->get('billplz_vkey'));
 
         return $this->load->view('extension/payment/billplz', $data);
     }
 
-    public function proceed() {
+    public function proceed()
+    {
+
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
 
         /*
          * Get All Data
          */
         $data = [
-            'name' => $_POST['name'],
-            'email' => $_POST['email'],
-            'description' => $_POST['description'],
-            'mobile' => $_POST['mobile'],
-            'reference_1_label' => $_POST['reference_1_label'],
-            'reference_1' => $_POST['reference_1'],
-            'amount' => $_POST['amount'],
-            'redirect_url' => $_POST['redirect_url'],
-            'callback_url' => $_POST['callback_url'],
-            'delivery' => $_POST['delivery'],
-            'sha256' => $_POST['sha256'],
+            'name' => $_SESSION['name'],
+            'email' => $_SESSION['email'],
+            'description' => $_SESSION['description'],
+            'mobile' => $_SESSION['mobile'],
+            'reference_1_label' => $_SESSION['reference_1_label'],
+            'reference_1' => $_SESSION['reference_1'],
+            'amount' => $_SESSION['amount'],
+            'redirect_url' => $_SESSION['redirect_url'],
+            'callback_url' => $_SESSION['callback_url'],
+            'delivery' => $_SESSION['delivery'],
             'collection_id' => $this->config->get('billplz_vkey'),
             'api_key' => $this->config->get('billplz_mid')
         ];
-
-        /*
-         *  Prepare Data for Validation SHA256
-         *  Data arranged: name + amount + email + delivery + callback url + redirect url + reference 1 + description
-         *  Rules: All Lower-Case
-         */
-        $preparedString = strtolower($data['name'] . $data['amount'] . $data['email'] . $data['delivery'] . $data['callback_url'] . $data['redirect_url'] . $data['reference_1'] . $data['description']);
-        $generatedSHA = hash_hmac('sha256', $preparedString, $this->config->get('billplz_vkey'));
-
-        if ($data['sha256'] !== $generatedSHA)
-            exit('Input has been tempered');
+        unset($data['name']);
+        unset($data['email']);
+        unset($data['description']);
+        unset($data['mobile']);
+        unset($data['reference_1_label']);
+        unset($data['reference_1']);
+        unset($data['amount']);
+        unset($data['redirect_url']);
+        unset($data['callback_url']);
+        unset($data['delivery']);
 
         /*
          * Create Billplz Class Instance.
@@ -98,21 +99,22 @@ class ControllerExtensionPaymentBillplz extends Controller {
          * Check wether we want to send email or sms or both or not
          */
         $billplz
-                ->setAmount($data['amount'])
-                ->setMobile($data['mobile'])
-                ->setEmail($data['email'])
-                ->setCollection($data['collection_id'])
-                ->setDeliver($data['delivery'])
-                ->setDescription($data['description'])
-                ->setName($data['name'])
-                ->setPassbackURL($data['redirect_url'], $data['callback_url'])
-                ->setReference_1($data['reference_1'])
-                ->setReference_1_Label($data['reference_1_label'])
-                ->create_bill($data['api_key'], $this->config->get('billplz_sandbox'));
+            ->setAmount($data['amount'])
+            ->setMobile($data['mobile'])
+            ->setEmail($data['email'])
+            ->setCollection($data['collection_id'])
+            ->setDeliver($data['delivery'])
+            ->setDescription($data['description'])
+            ->setName($data['name'])
+            ->setPassbackURL($data['redirect_url'], $data['callback_url'])
+            ->setReference_1($data['reference_1'])
+            ->setReference_1_Label($data['reference_1_label'])
+            ->create_bill($data['api_key'], $this->config->get('billplz_sandbox'));
         header('Location: ' . $billplz->getURL());
     }
 
-    public function return_ipn() {
+    public function return_ipn()
+    {
         $this->load->model('checkout/order');
 
         /*
@@ -172,12 +174,12 @@ class ControllerExtensionPaymentBillplz extends Controller {
 
         exit();
     }
-
     /*     * ***************************************************
      * Callback with IPN(Instant Payment Notification)
      * **************************************************** */
 
-    public function callback_ipn() {
+    public function callback_ipn()
+    {
         $this->load->model('checkout/order');
 
         /*
@@ -218,19 +220,21 @@ class ControllerExtensionPaymentBillplz extends Controller {
         }
         exit('Callback Success');
     }
-
 }
 
-class billplzCURL {
+class billplzCURL
+{
 
     var $array, $obj, $auto_submit, $url, $id, $deliverLevel, $errorMessage;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->array = array();
         $this->obj = new Billplzcurlaction;
     }
 
-    public function getCollectionIndex($api_key, $mode = 'Production', $status = null, $page = '1') {
+    public function getCollectionIndex($api_key, $mode = 'Production', $status = null, $page = '1')
+    {
         $this->obj->setAPI($api_key);
         $this->obj->setAction('GETCOLLECTIONINDEX');
         $this->obj->setURL($mode);
@@ -243,7 +247,8 @@ class billplzCURL {
         return $data;
     }
 
-    public static function getRedirectData($signkey) {
+    public static function getRedirectData($signkey)
+    {
         $data = [
             'id' => $_GET['billplz']['id'],
             'paid_at' => isset($_GET['billplz']['paid_at']) ? $_GET['billplz']['paid_at'] : exit('Please enable Billplz XSignature Payment Completion'),
@@ -267,7 +272,8 @@ class billplzCURL {
         }
     }
 
-    public static function getCallbackData($signkey) {
+    public static function getCallbackData($signkey)
+    {
         $data = [
             'amount' => $_POST['amount'],
             'collection_id' => $_POST['collection_id'],
@@ -302,7 +308,8 @@ class billplzCURL {
 
 //--------------------------------------------------------------------------
 // Direct Use
-    public function check_apikey_collectionid($api_key, $collection_id, $mode) {
+    public function check_apikey_collectionid($api_key, $collection_id, $mode)
+    {
         $array = array(
             'collection_id' => $collection_id,
             'email' => 'aa@gmail.com',
@@ -328,7 +335,8 @@ class billplzCURL {
 
 //------------------------------------------------------------------------//
 // Indirect Use
-    public function checkMobileNumber($mobile) {
+    public function checkMobileNumber($mobile)
+    {
         $mobile = preg_replace("/[^0-9]/", "", $mobile);
         $custTel = $mobile;
         $custTel2 = substr($mobile, 0, 1);
@@ -348,32 +356,38 @@ class billplzCURL {
 
 //------------------------------------------------------------------------//
 // Direct Use
-    public function setCollection($collection_id) {
+    public function setCollection($collection_id)
+    {
         $this->array['collection_id'] = $collection_id;
         return $this;
     }
 
-    public function setName($name) {
+    public function setName($name)
+    {
         $this->array['name'] = $name;
         return $this;
     }
 
-    public function setEmail($email) {
+    public function setEmail($email)
+    {
         $this->array['email'] = $email;
         return $this;
     }
 
-    public function setMobile($mobile) {
+    public function setMobile($mobile)
+    {
         $this->array['mobile'] = $this->checkMobileNumber($mobile);
         return $this;
     }
 
-    public function setAmount($amount) {
+    public function setAmount($amount)
+    {
         $this->array['amount'] = $amount * 100;
         return $this;
     }
 
-    public function setDeliver($deliver) {
+    public function setDeliver($deliver)
+    {
         /*
          * '0' => No Notification
          * '1' => Email Notification
@@ -388,28 +402,33 @@ class billplzCURL {
         return $this;
     }
 
-    public function setReference_1($reference_1) {
+    public function setReference_1($reference_1)
+    {
         $this->array['reference_1'] = substr($reference_1, 0, 119);
         return $this;
     }
 
-    public function setDescription($description) {
+    public function setDescription($description)
+    {
         $this->array['description'] = substr($description, 0, 199);
         return $this;
     }
 
-    public function setPassbackURL($redirect_url, $callback_url) {
+    public function setPassbackURL($redirect_url, $callback_url)
+    {
         $this->array['redirect_url'] = $redirect_url;
         $this->array['callback_url'] = $callback_url;
         return $this;
     }
 
-    public function setReference_1_Label($label) {
+    public function setReference_1_Label($label)
+    {
         $this->array['reference_1_label'] = substr($label, 0, 19);
         return $this;
     }
 
-    public function create_bill($api_key, $mode) {
+    public function create_bill($api_key, $mode)
+    {
         $this->obj->setAPI($api_key);
         $this->obj->setAction('CREATE');
         $this->obj->setURL($mode);
@@ -461,31 +480,35 @@ class billplzCURL {
         return $this;
     }
 
-    public function getURL() {
+    public function getURL()
+    {
         return $this->url;
     }
 
-    public function getErrorMessage() {
+    public function getErrorMessage()
+    {
         return $this->errorMessage;
     }
 
-    public function getID() {
+    public function getID()
+    {
         return $this->id;
     }
 
 //------------------------------------------------------------------------//
 // Direct Use
-    public function check_bill($api_key, $bill_id, $mode) {
+    public function check_bill($api_key, $bill_id, $mode)
+    {
         $this->obj->setAPI($api_key);
         $this->obj->setAction('CHECK');
         $this->obj->setURL($mode, $bill_id);
         $data = $this->obj->curl_action();
         return $data;
     }
-
 }
 
-class Billplzcurlaction {
+class Billplzcurlaction
+{
     /*
      * How to use?
      *  Create Object: $obj = new curlaction;
@@ -503,17 +526,20 @@ class Billplzcurlaction {
     public static $production = 'https://www.billplz.com/api/v3/';
     public static $staging = 'https://billplz-staging.herokuapp.com/api/v3/';
 
-    public function setAPI($api_key) {
+    public function setAPI($api_key)
+    {
         $this->api_key = $api_key;
         return $this;
     }
 
-    public function setAction($action) {
+    public function setAction($action)
+    {
         $this->action = $action;
         return $this;
     }
 
-    public function setURL($mode, $id = '') {
+    public function setURL($mode, $id = '')
+    {
         if ($mode == 'Staging') {
             $this->url = self::$staging;
         } else {
@@ -531,7 +557,8 @@ class Billplzcurlaction {
         return $this;
     }
 
-    public function curl_action($data = '') {
+    public function curl_action($data = '')
+    {
 // Use wp_safe_remote_post for Windows Server Compatibility
         if (function_exists('wp_safe_remote_post')) {
             $curl_url = $this->url;
@@ -560,7 +587,8 @@ class Billplzcurlaction {
         }
     }
 
-    private function prepareWP($data) {
+    private function prepareWP($data)
+    {
         $args = array(
             'headers' => array(
                 'Authorization' => 'Basic ' . base64_encode($this->api_key . ':')
@@ -578,5 +606,4 @@ class Billplzcurlaction {
         }
         return $args;
     }
-
 }
