@@ -78,16 +78,16 @@ class ControllerExtensionPaymentBillplz extends Controller
             'collection_id' => $this->config->get('billplz_vkey'),
             'api_key' => $this->config->get('billplz_mid')
         ];
-        unset($data['name']);
-        unset($data['email']);
-        unset($data['description']);
-        unset($data['mobile']);
-        unset($data['reference_1_label']);
-        unset($data['reference_1']);
-        unset($data['amount']);
-        unset($data['redirect_url']);
-        unset($data['callback_url']);
-        unset($data['delivery']);
+        unset($_SESSION['name']);
+        unset($_SESSION['email']);
+        unset($_SESSION['description']);
+        unset($_SESSION['mobile']);
+        unset($_SESSION['reference_1_label']);
+        unset($_SESSION['reference_1']);
+        unset($_SESSION['amount']);
+        unset($_SESSION['redirect_url']);
+        unset($_SESSION['callback_url']);
+        unset($_SESSION['delivery']);
 
         /*
          * Create Billplz Class Instance.
