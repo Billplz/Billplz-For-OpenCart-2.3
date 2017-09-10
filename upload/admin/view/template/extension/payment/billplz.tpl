@@ -1,4 +1,5 @@
-<?php echo $header; ?><?php echo $column_left; ?>
+<?php
+echo $header; ?><?php echo $column_left; ?>
 <div id="content">
     <div class="page-header">
         <div class="container-fluid">
@@ -8,16 +9,16 @@
             <h1><?php echo $heading_title; ?></h1>
             <ul class="breadcrumb">
 <?php foreach ($breadcrumbs as $breadcrumb) { ?>
-                    <li><a href="<?php echo $breadcrumb['href']; ?>"><?php echo $breadcrumb['text']; ?></a></li>
+                <li><a href="<?php echo $breadcrumb['href']; ?>"><?php echo $breadcrumb['text']; ?></a></li>
                 <?php } ?>
             </ul>
         </div>
     </div>
     <div class="container-fluid">
 <?php if ($error_warning) { ?>
-            <div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> <?php echo $error_warning; ?>
-                <button type="button" class="close" data-dismiss="alert">&times;</button>
-            </div>
+        <div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> <?php echo $error_warning; ?>
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+        </div>
 <?php } ?>
         <div class="panel panel-default">
             <div class="panel-heading">
@@ -26,48 +27,27 @@
             <div class="panel-body">
                 <form action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form-billplz" class="form-horizontal">
                     <div class="form-group required">
-                        <label class="col-sm-2 control-label" for="input-mid"><?php echo $entry_mid; ?></label>
+                        <label class="col-sm-2 control-label" for="input-api-key"><span data-toggle="tooltip" title="<?php echo $help_api_key; ?>"><?php echo $billplz_api_key; ?></span></label>
                         <div class="col-sm-10">
-                            <input type="text" name="billplz_mid" value="<?php echo $billplz_mid; ?>" placeholder="<?php echo $entry_mid; ?>" id="input-mid" class="form-control" />
-<?php if ($error_mid) { ?>
-                                <div class="text-danger"><?php echo $error_mid; ?></div>
-                            <?php } ?>
-                        </div>
-                    </div>
-                    <div class="form-group required">
-                        <label class="col-sm-2 control-label" for="input-vkey"><span data-toggle="tooltip" title="<?php echo $help_vkey; ?>"><?php echo $entry_vkey; ?></span></label>
-                        <div class="col-sm-10">
-                            <input type="text" name="billplz_vkey" value="<?php echo $billplz_vkey; ?>" placeholder="<?php echo $entry_vkey; ?>" id="input-vkey" class="form-control" />
-<?php if ($error_vkey) { ?>
-                                <div class="text-danger"><?php echo $error_vkey; ?></div>
-                            <?php } ?>
-                        </div>
-                    </div>
-                    <div class="form-group required">
-                        <label class="col-sm-2 control-label" for="input-xsign"><span data-toggle="tooltip" title="<?php echo $help_xsign; ?>"><?php echo $entry_xsign; ?></span></label>
-                        <div class="col-sm-10">
-                            <input type="text" name="billplz_xsign" value="<?php echo $billplz_xsign; ?>" placeholder="<?php echo $entry_xsign; ?>" id="input-xsign" class="form-control" />
-<?php if ($error_xsign) { ?>
-                                <div class="text-danger"><?php echo $error_xsign; ?></div>
+                            <input type="text" name="billplz_api_key_value" value="<?php echo $billplz_api_key_value; ?>" placeholder="<?php echo $billplz_api_key; ?>" id="input-api-key" class="form-control" />
+<?php if ($error_api_key) { ?>
+                            <div class="text-danger"><?php echo $error_api_key; ?></div>
                             <?php } ?>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-2 control-label" for="sandbox-status"><?php echo $entry_host; ?></label>
+                        <label class="col-sm-2 control-label" for="input-collection-id"><?php echo $billplz_collection_id; ?></label>
                         <div class="col-sm-10">
-                            <select name="billplz_sandbox" id="sandbox-status" class="form-control">
-<?php
-$number11 = array("Production", "Staging");
-//$idno=array("https://www.billplz.com/api/v3/bills/"=>"Production","https://billplz-staging.herokuapp.com/api/v3/bills/"=>"Sandbox"); 
-foreach ($number11 as $idno3) {
-    ?>
-                                    <?php if ($idno3 == $billplz_sandbox) { ?>
-                                        <option value="<?php echo $idno3; ?>" selected="selected"><?php echo $idno3; ?></option>
-                                    <?php } else { ?>
-                                        <option value="<?php echo $idno3; ?>"><?php echo $idno3; ?></option>
-                                    <?php } ?>
-                                <?php } ?>
-                            </select>
+                            <input type="text" name="billplz_collection_id_value" value="<?php echo $billplz_collection_id_value; ?>" placeholder="<?php echo $billplz_collection_id; ?>" id="input-collection-id" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="form-group required">
+                        <label class="col-sm-2 control-label" for="input-x-signature"><span data-toggle="tooltip" title="<?php echo $help_x_signature; ?>"><?php echo $billplz_x_signature; ?></span></label>
+                        <div class="col-sm-10">
+                            <input type="text" name="billplz_x_signature_value" value="<?php echo $billplz_x_signature_value; ?>" placeholder="<?php echo $billplz_x_signature; ?>" id="input-x-signature" class="form-control" />
+<?php if ($error_x_signature) { ?>
+                            <div class="text-danger"><?php echo $error_x_signature; ?></div>
+                            <?php } ?>
                         </div>
                     </div>
                     <div class="form-group">
@@ -79,9 +59,9 @@ foreach ($number11 as $idno3) {
                                 foreach ($idno as $key => $value) {
                                     ?>
                                     <?php if ($key == $billplz_delivery) { ?>
-                                        <option value="<?php echo $key; ?>" selected="selected"><?php echo $value; ?></option>
+                                <option value="<?php echo $key; ?>" selected="selected"><?php echo $value; ?></option>
                                     <?php } else { ?>
-                                        <option value="<?php echo $key; ?>"><?php echo $value; ?></option>
+                                <option value="<?php echo $key; ?>"><?php echo $value; ?></option>
                                     <?php } ?>
                                 <?php } ?>
                             </select>
@@ -94,28 +74,14 @@ foreach ($number11 as $idno3) {
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-2 control-label" for="input-order-status"><?php echo $entry_order_status; ?></label>
-                        <div class="col-sm-10">
-                            <select name="billplz_order_status_id" id="input-order-status" class="form-control">
-                                <?php foreach ($order_statuses as $order_status) { ?>
-                                    <?php if ($order_status['order_status_id'] == $billplz_order_status_id) { ?>
-                                        <option value="<?php echo $order_status['order_status_id']; ?>" selected="selected"><?php echo $order_status['name']; ?></option>
-                                    <?php } else { ?>
-                                        <option value="<?php echo $order_status['order_status_id']; ?>"><?php echo $order_status['name']; ?></option>
-                                    <?php } ?>
-                                <?php } ?>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
                         <label class="col-sm-2 control-label"><?php echo $entry_completed_status; ?></label>
                         <div class="col-sm-10">
                             <select name="billplz_completed_status_id" class="form-control">
                                 <?php foreach ($order_statuses as $order_status) { ?>
                                     <?php if ($order_status['order_status_id'] == $billplz_completed_status_id) { ?>
-                                        <option value="<?php echo $order_status['order_status_id']; ?>" selected="selected"><?php echo $order_status['name']; ?></option>
+                                <option value="<?php echo $order_status['order_status_id']; ?>" selected="selected"><?php echo $order_status['name']; ?></option>
                                     <?php } else { ?>
-                                        <option value="<?php echo $order_status['order_status_id']; ?>"><?php echo $order_status['name']; ?></option>
+                                <option value="<?php echo $order_status['order_status_id']; ?>"><?php echo $order_status['name']; ?></option>
                                     <?php } ?>
                                 <?php } ?>
                             </select>
@@ -127,9 +93,9 @@ foreach ($number11 as $idno3) {
                             <select name="billplz_pending_status_id" class="form-control">
                                 <?php foreach ($order_statuses as $order_status) { ?>
                                     <?php if ($order_status['order_status_id'] == $billplz_pending_status_id) { ?>
-                                        <option value="<?php echo $order_status['order_status_id']; ?>" selected="selected"><?php echo $order_status['name']; ?></option>
+                                <option value="<?php echo $order_status['order_status_id']; ?>" selected="selected"><?php echo $order_status['name']; ?></option>
                                     <?php } else { ?>
-                                        <option value="<?php echo $order_status['order_status_id']; ?>"><?php echo $order_status['name']; ?></option>
+                                <option value="<?php echo $order_status['order_status_id']; ?>"><?php echo $order_status['name']; ?></option>
                                     <?php } ?>
                                 <?php } ?>
                             </select>
@@ -141,9 +107,9 @@ foreach ($number11 as $idno3) {
                             <select name="billplz_failed_status_id" class="form-control">
                                 <?php foreach ($order_statuses as $order_status) { ?>
                                     <?php if ($order_status['order_status_id'] == $billplz_failed_status_id) { ?>
-                                        <option value="<?php echo $order_status['order_status_id']; ?>" selected="selected"><?php echo $order_status['name']; ?></option>
+                                <option value="<?php echo $order_status['order_status_id']; ?>" selected="selected"><?php echo $order_status['name']; ?></option>
                                     <?php } else { ?>
-                                        <option value="<?php echo $order_status['order_status_id']; ?>"><?php echo $order_status['name']; ?></option>
+                                <option value="<?php echo $order_status['order_status_id']; ?>"><?php echo $order_status['name']; ?></option>
                                     <?php } ?>
                                 <?php } ?>
                             </select>
@@ -156,9 +122,9 @@ foreach ($number11 as $idno3) {
                                 <option value="0"><?php echo $text_all_zones; ?></option>
                                 <?php foreach ($geo_zones as $geo_zone) { ?>
                                     <?php if ($geo_zone['geo_zone_id'] == $billplz_geo_zone_id) { ?>
-                                        <option value="<?php echo $geo_zone['geo_zone_id']; ?>" selected="selected"><?php echo $geo_zone['name']; ?></option>
+                                <option value="<?php echo $geo_zone['geo_zone_id']; ?>" selected="selected"><?php echo $geo_zone['name']; ?></option>
                                     <?php } else { ?>
-                                        <option value="<?php echo $geo_zone['geo_zone_id']; ?>"><?php echo $geo_zone['name']; ?></option>
+                                <option value="<?php echo $geo_zone['geo_zone_id']; ?>"><?php echo $geo_zone['name']; ?></option>
                                     <?php } ?>
                                 <?php } ?>
                             </select>
@@ -169,11 +135,11 @@ foreach ($number11 as $idno3) {
                         <div class="col-sm-10">
                             <select name="billplz_status" id="input-status" class="form-control">
                                 <?php if ($billplz_status) { ?>
-                                    <option value="1" selected="selected"><?php echo $text_enabled; ?></option>
-                                    <option value="0"><?php echo $text_disabled; ?></option>
+                                <option value="1" selected="selected"><?php echo $text_enabled; ?></option>
+                                <option value="0"><?php echo $text_disabled; ?></option>
                                 <?php } else { ?>
-                                    <option value="1"><?php echo $text_enabled; ?></option>
-                                    <option value="0" selected="selected"><?php echo $text_disabled; ?></option>
+                                <option value="1"><?php echo $text_enabled; ?></option>
+                                <option value="0" selected="selected"><?php echo $text_disabled; ?></option>
                                 <?php } ?>
                             </select>
                         </div>
