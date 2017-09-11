@@ -4,7 +4,7 @@
  * 
  * @package Payment Gateway
  * @author Wan Zulkarnain <wan@billplz.com>
- * @version 3.0
+ * @version 3.1
  */
  
 // Text

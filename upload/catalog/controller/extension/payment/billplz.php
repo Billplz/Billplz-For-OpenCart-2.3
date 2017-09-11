@@ -5,7 +5,7 @@
  * 
  * @package Payment Gateway
  * @author Wan Zulkarnain <wan@billplz.com>
- * @version 3.0
+ * @version 3.1
  */
 
 require_once __DIR__ .'/billplz-api.php';
@@ -62,7 +62,7 @@ class ControllerExtensionPaymentBillplz extends Controller
         $x_signature = $this->config->get('billplz_x_signature_value');
         $collection_id = $this->config->get('billplz_collection_id_value');
 
-        $delivery = $_SESSION['delivery'];
+        $deliver = $_SESSION['delivery'];
         $name = $_SESSION['name'];
         $email = $_SESSION['email'];
         $description = $_SESSION['description'];
