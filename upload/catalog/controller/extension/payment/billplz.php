@@ -1,14 +1,12 @@
 <?php
-
 /**
  * Billplz OpenCart Plugin
- * 
+ *
  * @package Payment Gateway
  * @author Wan Zulkarnain <wan@billplz.com>
- * @version 3.1
+ * @version 3.2
  */
-
-require_once __DIR__ .'/billplz-api.php';
+require_once __DIR__ . '/billplz-api.php';
 
 class ControllerExtensionPaymentBillplz extends Controller
 {
@@ -73,6 +71,20 @@ class ControllerExtensionPaymentBillplz extends Controller
         $redirect_url = $_SESSION['redirect_url'];
         $callback_url = $_SESSION['callback_url'];
 
+        /*
+         * Fix templating issue
+         */
+        if (empty($data['name']) || empty($data['email']) || empty($data['mobile'])) {
+            $this->load->language('extension/payment/billplz');
+            $this->load->model('checkout/order');
+            $order_info = $this->model_checkout_order->getOrder($this->session->data['order_id']);
+            $mobile = empty($order_info['telephone']) ? '' : $order_info['telephone'];
+            $name = $order_info['payment_firstname'] . ' ' . $order_info['payment_lastname'];
+            $email = empty($order_info['email']) ? exit('No Email') : $order_info['email'];
+        }
+
+        $description = urldecode($description);
+
         unset($_SESSION['name']);
         unset($_SESSION['email']);
         unset($_SESSION['description']);
@@ -85,7 +97,7 @@ class ControllerExtensionPaymentBillplz extends Controller
         unset($_SESSION['delivery']);
 
         $billplz = new Billplz_API(trim($api_key));
-        
+
         $billplz
             ->setCollection($collection_id)
             ->setAmount($amount)
@@ -108,14 +120,14 @@ class ControllerExtensionPaymentBillplz extends Controller
         $api_key = $this->config->get('billplz_api_key_value');
         $x_signature = $this->config->get('billplz_x_signature_value');
         $data = Billplz_API::getRedirectData($x_signature);
-        
+
         /*
          * Create Billplz Class Instance.
          * Please refer below for the classes.
          */
         $billplz = new Billplz_API($api_key);
         $moreData = $billplz->check_bill($data['id']);
-        
+
         $orderid = $moreData['reference_1'];
         $status = $moreData['paid'];
         $amount = $moreData['amount'];
@@ -126,9 +138,8 @@ class ControllerExtensionPaymentBillplz extends Controller
             $order_status_id = $this->config->get('billplz_completed_status_id');
         } elseif (!$status) {
             $order_status_id = $this->config->get('billplz_failed_status_id');
-        }
-        else {
-        	$order_status_id = $this->config->get('billplz_pending_status_id');
+        } else {
+            $order_status_id = $this->config->get('billplz_pending_status_id');
         }
 
         if (!$order_info['order_status_id'])
@@ -167,19 +178,19 @@ class ControllerExtensionPaymentBillplz extends Controller
     public function callback_ipn()
     {
         $this->load->model('checkout/order');
-        
+
         $api_key = $this->config->get('billplz_api_key_value');
         $x_signature = $this->config->get('billplz_x_signature_value');
 
         $data = Billplz_API::getCallbackData($x_signature);
-      
+
         /*
          * Create Billplz Class Instance.
          * Please refer below for the classes.
          */
         $billplz = new Billplz_API($api_key);
         $moreData = $billplz->check_bill($data['id']);
-        
+
         $orderid = $moreData['reference_1'];
         $status = $moreData['paid'];
         $amount = $moreData['amount'];
