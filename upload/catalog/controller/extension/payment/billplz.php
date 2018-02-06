@@ -10,7 +10,6 @@ require_once __DIR__ . '/billplz-api.php';
 
 class ControllerExtensionPaymentBillplz extends Controller
 {
-
     public function index()
     {
         $this->load->language('extension/payment/billplz');
@@ -51,7 +50,8 @@ class ControllerExtensionPaymentBillplz extends Controller
 
     public function proceed()
     {
-
+        //error_reporting(E_ALL);
+        //ini_set('display_errors', 'On');
         if (session_status() == PHP_SESSION_NONE) {
             session_start();
         }
@@ -74,7 +74,7 @@ class ControllerExtensionPaymentBillplz extends Controller
         /*
          * Fix templating issue
          */
-        if (empty($name) || empty($email) || empty($mobile)) {
+        if (empty(trim($name)) || empty(trim($email)) || empty(trim($mobile))) {
             $this->load->language('extension/payment/billplz');
             $this->load->model('checkout/order');
             $order_info = $this->model_checkout_order->getOrder($this->session->data['order_id']);
@@ -110,6 +110,10 @@ class ControllerExtensionPaymentBillplz extends Controller
             ->setReference_1_Label($reference_1_label)
             ->setPassbackURL($callback_url, $redirect_url)
             ->create_bill(true);
+
+        if (empty($billplz->getURL())) {
+            exit($billplz->getErrorMessage());
+        }
         header('Location: ' . $billplz->getURL());
     }
 
@@ -142,14 +146,15 @@ class ControllerExtensionPaymentBillplz extends Controller
             $order_status_id = $this->config->get('billplz_pending_status_id');
         }
 
-        if (!$order_info['order_status_id'])
+        if (!$order_info['order_status_id']) {
             $this->model_checkout_order->addOrderHistory($orderid, $order_status_id, "Redirect: " . $paydate . " URL:" . $moreData['url'], false);
-        else {
+        } else {
             /*
              * Prevent same order status id from adding more than 1 update
              */
-            if ($order_status_id != $order_info['order_status_id'])
+            if ($order_status_id != $order_info['order_status_id']) {
                 $this->model_checkout_order->addOrderHistory($orderid, $order_status_id, "Redirect: " . $paydate . " URL:" . $moreData['url'], false);
+            }
         }
 
         /*
@@ -157,10 +162,11 @@ class ControllerExtensionPaymentBillplz extends Controller
          * payment status
          */
 
-        if ($status)
+        if ($status) {
             $goTo = $this->url->link('checkout/success');
-        else
+        } else {
             $goTo = $this->url->link('checkout/checkout');
+        }
 
         if (!headers_sent()) {
             header('Location: ' . $goTo);
@@ -208,8 +214,9 @@ class ControllerExtensionPaymentBillplz extends Controller
             /*
              * Prevent same order status id from adding more than 1 update
              */
-            if ($order_status_id != $order_info['order_status_id'])
+            if ($order_status_id != $order_info['order_status_id']) {
                 $this->model_checkout_order->addOrderHistory($orderid, $order_status_id, "Callback: " . $paydate . " URL:" . $moreData['url'], false);
+            }
         }
         exit('Callback Success');
     }
