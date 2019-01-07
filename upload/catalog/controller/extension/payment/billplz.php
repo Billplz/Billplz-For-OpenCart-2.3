@@ -140,10 +140,8 @@ class ControllerExtensionPaymentBillplz extends Controller
 
         if ($status) {
             $order_status_id = $this->config->get('billplz_completed_status_id');
-        } elseif (!$status) {
-            $order_status_id = $this->config->get('billplz_failed_status_id');
         } else {
-            $order_status_id = $this->config->get('billplz_pending_status_id');
+            $order_status_id = $this->config->get('billplz_failed_status_id');
         }
 
         if (!$order_info['order_status_id']) {
@@ -205,9 +203,10 @@ class ControllerExtensionPaymentBillplz extends Controller
 
         if ($status) {
             $order_status_id = $this->config->get('billplz_completed_status_id');
-        } elseif (!$status) {
-            $order_status_id = $this->config->get('billplz_pending_status_id');
+        } else {
+            $order_status_id = $this->config->get('billplz_failed_status_id');
         }
+        
         if (!$order_info['order_status_id']) {
             $this->model_checkout_order->addOrderHistory($orderid, $order_status_id, "Callback: " . $paydate . " URL:" . $moreData['url'], false);
         } else {
