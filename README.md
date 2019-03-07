@@ -6,7 +6,7 @@ Accept Payment using Billplz for OpenCart 2.3
 
 1. Download Module: https://codeload.github.com/Billplz/Billplz-For-OpenCart-2.3/zip/master
 2. Upload the **"upload"** folder contents to **OpenCart Installation Directory**
-3. Set your **API Key & X Signature Key**
+3. Set your **API Key, Collection ID & X Signature Key**
 4. Set to **Enable** the gateway.
 5. Done!
 
