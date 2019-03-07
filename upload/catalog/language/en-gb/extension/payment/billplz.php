@@ -3,8 +3,8 @@
  * Billplz OpenCart Plugin
  *
  * @package Payment Gateway
- * @author Wan Zulkarnain <wan@billplz.com>
- * @version 3.2
+ * @author Billplz Sdn. Bhd.
+ * @version 3.3.0
  */
 
 // Text

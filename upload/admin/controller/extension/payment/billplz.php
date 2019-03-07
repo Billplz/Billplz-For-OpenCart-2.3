@@ -4,15 +4,17 @@
  * Billplz OpenCart Plugin
  *
  * @package Payment Gateway
- * @author Wan Zulkarnain <wan@billplz.com>
- * @version 3.2
+ * @author Billplz Sdn. Bhd.
+ * @version 3.3.0
  */
 
-class ControllerExtensionPaymentBillplz extends Controller {
+class ControllerExtensionPaymentBillplz extends Controller
+{
 
     private $error = array();
 
-    public function index() {
+    public function index()
+    {
         $this->load->language('extension/payment/billplz');
 
         $this->document->setTitle($this->language->get('heading_title'));
@@ -38,11 +40,8 @@ class ControllerExtensionPaymentBillplz extends Controller {
         $data['billplz_api_key'] = $this->language->get('billplz_api_key');
         $data['billplz_collection_id'] = $this->language->get('billplz_collection_id');
         $data['billplz_x_signature'] = $this->language->get('billplz_x_signature');
-		$data['entry_minlimit'] = $this->language->get('entry_minlimit');
-		$data['entry_delivery'] = $this->language->get('entry_delivery');
+        $data['entry_minlimit'] = $this->language->get('entry_minlimit');
         $data['entry_completed_status'] = $this->language->get('entry_completed_status');
-        $data['entry_pending_status'] = $this->language->get('entry_pending_status');
-        $data['entry_failed_status'] = $this->language->get('entry_failed_status');
         $data['entry_geo_zone'] = $this->language->get('entry_geo_zone');
         $data['entry_status'] = $this->language->get('entry_status');
         $data['entry_sort_order'] = $this->language->get('entry_sort_order');
@@ -64,6 +63,12 @@ class ControllerExtensionPaymentBillplz extends Controller {
             $data['error_api_key'] = $this->error['api_key'];
         } else {
             $data['error_api_key'] = '';
+        }
+
+        if (isset($this->error['collection_id'])) {
+            $data['error_collection_id'] = $this->error['collection_id'];
+        } else {
+            $data['error_collection_id'] = '';
         }
 
         if (isset($this->error['x_signature'])) {
@@ -111,12 +116,6 @@ class ControllerExtensionPaymentBillplz extends Controller {
             $data['billplz_x_signature_value'] = $this->config->get('billplz_x_signature_value');
         }
 
-        if (isset($this->request->post['billplz_delivery'])) {
-            $data['billplz_delivery'] = $this->request->post['billplz_delivery'];
-        } else {
-            $data['billplz_delivery'] = $this->config->get('billplz_delivery');
-        }
-
         if (isset($this->request->post['billplz_minlimit'])) {
             $data['billplz_minlimit'] = $this->request->post['billplz_minlimit'];
         } else {
@@ -127,18 +126,6 @@ class ControllerExtensionPaymentBillplz extends Controller {
             $data['billplz_completed_status_id'] = $this->request->post['billplz_completed_status_id'];
         } else {
             $data['billplz_completed_status_id'] = $this->config->get('billplz_completed_status_id');
-        }
-
-        if (isset($this->request->post['billplz_pending_status_id'])) {
-            $data['billplz_pending_status_id'] = $this->request->post['billplz_pending_status_id'];
-        } else {
-            $data['billplz_pending_status_id'] = $this->config->get('billplz_pending_status_id');
-        }
-
-        if (isset($this->request->post['billplz_failed_status_id'])) {
-            $data['billplz_failed_status_id'] = $this->request->post['billplz_failed_status_id'];
-        } else {
-            $data['billplz_failed_status_id'] = $this->config->get('billplz_failed_status_id');
         }
 
         $this->load->model('localisation/order_status');
@@ -174,7 +161,8 @@ class ControllerExtensionPaymentBillplz extends Controller {
         $this->response->setOutput($this->load->view('extension/payment/billplz', $data));
     }
 
-    protected function validate() {
+    protected function validate()
+    {
         if (!$this->user->hasPermission('modify', 'extension/payment/billplz')) {
             $this->error['warning'] = $this->language->get('error_permission');
         }
@@ -183,11 +171,14 @@ class ControllerExtensionPaymentBillplz extends Controller {
             $this->error['api_key'] = $this->language->get('error_api_key');
         }
 
-		if (!$this->request->post['billplz_x_signature_value']) {
-			$this->error['x_signature'] = $this->language->get('error_x_signature');
-		}
+        if (!$this->request->post['billplz_api_key_value']) {
+            $this->error['collection_id'] = $this->language->get('error_collection_id');
+        }
+
+        if (!$this->request->post['billplz_x_signature_value']) {
+            $this->error['x_signature'] = $this->language->get('error_x_signature');
+        }
 
         return !$this->error;
     }
-
 }

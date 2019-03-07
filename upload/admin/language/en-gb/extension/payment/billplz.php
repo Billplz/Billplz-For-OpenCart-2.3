@@ -4,8 +4,8 @@
  * Billplz OpenCart Plugin
  *
  * @package Payment Gateway
- * @author Wan Zulkarnain <wan@billplz.com>
- * @version 3.2
+ * @author Billplz Sdn. Bhd.
+ * @version 3.3.0
  */
 // Versioning
 $_['billplz_ptype'] = "OpenCart";
@@ -21,14 +21,11 @@ $_['text_edit'] = 'Edit Billplz';
 $_['text_billplz'] = '<a onclick="window.open(\'http://www.billplz.com/\');" style="text-decoration:none;"><img src="view/image/payment/billplz-logo.jpg" alt="Billplz" title="Billplz. Fair Payment Software" style="border: 0px solid #EEEEEE;" height=25 width=94/></a>';
 
 // Entry
-$_['billplz_api_key'] = 'Billplz API Secret Key';
-$_['billplz_collection_id'] = 'Billplz Collection ID';
-$_['billplz_x_signature'] = 'Billplz X Signature Key';
+$_['billplz_api_key'] = 'API Secret Key';
+$_['billplz_collection_id'] = 'Collection ID';
+$_['billplz_x_signature'] = 'X Signature Key';
 $_['entry_minlimit'] = 'Minimum Limit';
-$_['entry_delivery'] = 'Delivery Notification';
 $_['entry_completed_status'] = 'Completed Status';
-$_['entry_pending_status'] = 'Pending Status';
-$_['entry_failed_status'] = 'Failed Status';
 $_['entry_geo_zone'] = 'Geo Zone';
 $_['entry_status'] = 'Status';
 $_['entry_sort_order'] = 'Sort Order';
@@ -41,4 +38,5 @@ $_['help_minlimit'] = 'Set total minimum limit to enable Billplz conditionally';
 // Error
 $_['error_permission'] = 'Warning: You do not have permission to modify Billplz Extensions!';
 $_['error_api_key'] = '<b>Billplz API Key</b> Required!';
+$_['error_collection_id'] = '<b>Billplz Collection ID</b> Required!';
 $_['error_x_signature'] = '<b>Billplz X Signature Key</b> Required!';
