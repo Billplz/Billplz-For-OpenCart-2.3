@@ -4,7 +4,7 @@ Accept Payment using Billplz for OpenCart 2.3
 
 # Installation
 
-1. Download Module: https://codeload.github.com/wzul/Billplz-For-OpenCart-2.3/zip/master
+1. Download Module: https://codeload.github.com/Billplz/Billplz-For-OpenCart-2.3/zip/master
 2. Upload the **"upload"** folder contents to **OpenCart Installation Directory**
 3. Set your **API Key & X Signature Key**
 4. Set to **Enable** the gateway.
@@ -21,4 +21,4 @@ Accept Payment using Billplz for OpenCart 2.3
 * Please make sure you have enabled X Signature Key properly on your [Billplz Account Settings](https://www.billplz.com/enterprise/setting)
 
 # Other
-Email: wan@billplz.com
+Facebook: [Billplz Dev Jam](https://www.facebook.com/groups/billplzdevjam/)
