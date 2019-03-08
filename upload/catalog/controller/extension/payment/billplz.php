@@ -4,7 +4,7 @@
  *
  * @package Payment Gateway
  * @author Billplz Sdn. Bhd.
- * @version 3.3.0
+ * @version 3.3.1
  */
 class ControllerExtensionPaymentBillplz extends Controller
 {
@@ -68,6 +68,8 @@ class ControllerExtensionPaymentBillplz extends Controller
             exit;
         }
 
+        $this->cart->clear();
+        
         header('Location: ' . $rbody['url']);
     }
 
