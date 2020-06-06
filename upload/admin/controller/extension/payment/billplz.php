@@ -1,16 +1,7 @@
 <?php
 
-/**
- * Billplz OpenCart Plugin
- *
- * @package Payment Gateway
- * @author Billplz Sdn. Bhd.
- * @version 3.3.1
- */
-
 class ControllerExtensionPaymentBillplz extends Controller
 {
-
     private $error = array();
 
     public function index()
@@ -37,21 +28,30 @@ class ControllerExtensionPaymentBillplz extends Controller
         $data['text_yes'] = $this->language->get('text_yes');
         $data['text_no'] = $this->language->get('text_no');
 
+        $data['billplz_is_sandbox'] = $this->language->get('billplz_is_sandbox');
         $data['billplz_api_key'] = $this->language->get('billplz_api_key');
         $data['billplz_collection_id'] = $this->language->get('billplz_collection_id');
         $data['billplz_x_signature'] = $this->language->get('billplz_x_signature');
-        $data['entry_minlimit'] = $this->language->get('entry_minlimit');
-        $data['entry_completed_status'] = $this->language->get('entry_completed_status');
-        $data['entry_geo_zone'] = $this->language->get('entry_geo_zone');
-        $data['entry_status'] = $this->language->get('entry_status');
-        $data['entry_sort_order'] = $this->language->get('entry_sort_order');
 
+        $data['entry_total'] = $this->language->get('entry_total');
+        $data['entry_completed_status'] = $this->language->get('entry_completed_status');
+        $data['entry_pending_status'] = $this->language->get('entry_pending_status');
+        $data['entry_geo_zone'] = $this->language->get('entry_geo_zone');
+        $data['entry_sort_order'] = $this->language->get('entry_sort_order');
+        $data['entry_status'] = $this->language->get('entry_status');
+
+        $data['help_is_sandbox'] = $this->language->get('help_is_sandbox');
         $data['help_api_key'] = $this->language->get('help_api_key');
+        $data['help_collection_id'] = $this->language->get('help_collection_id');
         $data['help_x_signature'] = $this->language->get('help_x_signature');
-        $data['help_minlimit'] = $this->language->get('help_minlimit');
+        $data['help_total'] = $this->language->get('help_total');
 
         $data['button_save'] = $this->language->get('button_save');
         $data['button_cancel'] = $this->language->get('button_cancel');
+
+        $data['tab_api_details'] = $this->language->get('tab_api_details');
+        $data['tab_general'] = $this->language->get('tab_general');
+        $data['tab_order_status'] = $this->language->get('tab_order_status');
 
         if (isset($this->error['warning'])) {
             $data['error_warning'] = $this->error['warning'];
@@ -96,7 +96,13 @@ class ControllerExtensionPaymentBillplz extends Controller
 
         $data['action'] = $this->url->link('extension/payment/billplz', 'token=' . $this->session->data['token'], true);
 
-        $data['cancel'] = $this->url->link('extension/extension', 'token=' . $this->session->data['token'] . '&type=payment', true);
+        $data['cancel'] = $this->url->link('extension/payment', 'token=' . $this->session->data['token'], true);
+
+        if (isset($this->request->post['billplz_is_sandbox_value'])) {
+            $data['billplz_is_sandbox_value'] = $this->request->post['billplz_is_sandbox_value'];
+        } else {
+            $data['billplz_is_sandbox_value'] = $this->config->get('billplz_is_sandbox_value');
+        }
 
         if (isset($this->request->post['billplz_api_key_value'])) {
             $data['billplz_api_key_value'] = $this->request->post['billplz_api_key_value'];
@@ -116,16 +122,22 @@ class ControllerExtensionPaymentBillplz extends Controller
             $data['billplz_x_signature_value'] = $this->config->get('billplz_x_signature_value');
         }
 
-        if (isset($this->request->post['billplz_minlimit'])) {
-            $data['billplz_minlimit'] = $this->request->post['billplz_minlimit'];
+        if (isset($this->request->post['billplz_total'])) {
+            $data['billplz_total'] = $this->request->post['billplz_total'];
         } else {
-            $data['billplz_minlimit'] = $this->config->get('billplz_minlimit');
+            $data['billplz_total'] = $this->config->get('billplz_total');
         }
 
         if (isset($this->request->post['billplz_completed_status_id'])) {
             $data['billplz_completed_status_id'] = $this->request->post['billplz_completed_status_id'];
         } else {
             $data['billplz_completed_status_id'] = $this->config->get('billplz_completed_status_id');
+        }
+
+        if (isset($this->request->post['billplz_pending_status_id'])) {
+            $data['billplz_pending_status_id'] = $this->request->post['billplz_pending_status_id'];
+        } else {
+            $data['billplz_pending_status_id'] = $this->config->get('billplz_pending_status_id');
         }
 
         $this->load->model('localisation/order_status');
@@ -171,7 +183,7 @@ class ControllerExtensionPaymentBillplz extends Controller
             $this->error['api_key'] = $this->language->get('error_api_key');
         }
 
-        if (!$this->request->post['billplz_api_key_value']) {
+        if (!$this->request->post['billplz_collection_id_value']) {
             $this->error['collection_id'] = $this->language->get('error_collection_id');
         }
 
@@ -180,5 +192,15 @@ class ControllerExtensionPaymentBillplz extends Controller
         }
 
         return !$this->error;
+    }
+
+    public function install() {
+        $this->load->model('extension/payment/billplz');
+        $this->model_extension_payment_billplz->install();
+    }
+
+    public function uninstall() {
+        $this->load->model('extension/payment/billplz');
+        $this->model_extension_payment_billplz->uninstall();
     }
 }
