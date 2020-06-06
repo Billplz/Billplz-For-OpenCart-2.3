@@ -85,8 +85,8 @@ class ControllerExtensionPaymentBillplz extends Controller
         );
 
         $data['breadcrumbs'][] = array(
-            'text' => $this->language->get('text_payment'),
-            'href' => $this->url->link('extension/payment', 'token=' . $this->session->data['token'], true)
+            'text' => $this->language->get('text_extension'),
+            'href' => $this->url->link('extension/extension', 'token=' . $this->session->data['token'], true)
         );
 
         $data['breadcrumbs'][] = array(
@@ -96,7 +96,7 @@ class ControllerExtensionPaymentBillplz extends Controller
 
         $data['action'] = $this->url->link('extension/payment/billplz', 'token=' . $this->session->data['token'], true);
 
-        $data['cancel'] = $this->url->link('extension/payment', 'token=' . $this->session->data['token'], true);
+        $data['cancel'] = $this->url->link('extension/extension', 'token=' . $this->session->data['token'], true);
 
         if (isset($this->request->post['billplz_is_sandbox_value'])) {
             $data['billplz_is_sandbox_value'] = $this->request->post['billplz_is_sandbox_value'];
