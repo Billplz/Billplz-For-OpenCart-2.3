@@ -13,7 +13,7 @@ Accept payment using Billplz for OpenCart 2.3
 ## System Requirements
 
 1. PHP 7.0 or later.
-1. OpenCart 3.0.x.
+1. OpenCart 2.3.x.
 1. Not compatible with any other OpenCart version.
 
 ## Extras
